@@ -34,9 +34,11 @@ writeConsumers
 % more columns can be used to generate spatial model. Define location in
 % META under c1, c2, etc. for each column supplied.
 [consData,consTxt,]= xlsread([fileLocation fileConsumption],sheetnameConsumption);
+%consData are the numeric values and consTxt are the text cells
 E_c=consData(:,2:end); %second column and further
 t=consData(:,1); %first column and further
 clear consData consTxt
+%Does nothing with ConsTxt
 
 %% Load meta file:
 % The meta file loads producers and consumers information. Producers p have
@@ -59,16 +61,17 @@ clear metaNum metaTxt
 % during storage.
 
 Output=0; %Output variable suppresses making graphs.
+[E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
 for i=1:50 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
     % and production residuals E_pres. 
-    [E_cres, E_pres, Transport]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
-
+    [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
     %Evaluation of mismatch:
     Mismatch=sum(sum(E_cres))-sum(sum(E_pres)) % Net shortage of energy per year
     MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
     % The producing capacity is increased by a factor (100% + mismatch percentage). 
-    Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2));
+    Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2)); 
+    % *It is dividing the shortage percentage by the number of producers.
     if abs(Mismatch)<1 % 1 is arbitrary, choose a better value.
         break
     end
@@ -76,4 +79,13 @@ end
 
 %% print a summary:
 Output=1;
-EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
+[E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
+
+%Extracting Useful information:
+E_imbalance = EnergyImbalance (E_p_final,E_c);
+
+for i=1:size(Producers.type,1)
+    string=Producers.type{i,1};
+    coordinates=Producers.coordinates(i,:);
+end
+E_p_frac_solar=solarFunction(t,coordinates,Constant);

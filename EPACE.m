@@ -1,4 +1,4 @@
-function [E_cres, E_pres, Transport]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output)
+function [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output)
 
 %% EPACE Energy Production And Consumption Equilibration
 % Code by Mark Weijers 

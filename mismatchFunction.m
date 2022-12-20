@@ -5,6 +5,10 @@ function [E_cres,E_pres,Transport]=mismatchFunction(E_p,E_c,Efficiency,Transport
 % refer to authors if used.
 
 %% CODE DOES NOT WORK FOR NODES AT EXACT SAME LOCATION (YET)
+%E_pres is the energy produced (E_p) after substracting the energy transported to the node. 
+%E_cres is the energy that the consumer still needs after being supplied
+%(it will be positive if the energy produced wasn't enough)
+
 
 EfficiencySorted=sort(unique(Efficiency(:)),"descend");
 E_pres=E_p; %Residual fraction of energy produced
@@ -19,10 +23,10 @@ for i=1:size(EfficiencySorted,1)
     %efficient end user:
     E_M=E_cres - E_pres*(Efficiency.*transportLine);
     %Net energy need is never negative:
-    E_M(E_M<0)=0;
+    E_M(E_M<0)=0; %If E_M is negative, it will be zero. 
     % Consumer energy takeup from this transport line is saved to back 
     % calculate the usage:
-    Transport.line(i).Energy_used_by_node=E_cres-E_M;
+    Transport.line(i).Energy_used_by_node=E_cres-E_M;  
     %New E_p matrix is made:
     %Back calculate the residuals of the producer:
     Transport.line(i).Energy_supplied_by_node=Transport.line(i).Energy_used_by_node*transportLine'*(EfficiencySorted(i));
