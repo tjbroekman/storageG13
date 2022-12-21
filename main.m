@@ -78,7 +78,7 @@ for i=1:50 %Break either if mismatch is low or if counter is finished
 end
 
 %% print a summary:
-Output=1;
+Output=0;
 [E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
 
 %Extracting Useful information:
@@ -89,3 +89,5 @@ for i=1:size(Producers.type,1)
     coordinates=Producers.coordinates(i,:);
 end
 E_p_frac_solar=solarFunction(t,coordinates,Constant);
+[E_c_consumerfunction] = consumerFunction(Consumers);
+plot([0:(1/96):365], E_c_consumerfunction(:,1))
