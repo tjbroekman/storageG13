@@ -12,8 +12,8 @@ fileLocation=''; % in case you save your excel files elsewhere
 % A time vector t of n x 1,
 % An energy consumption matrix E_c matrix of n x m with m types of
 % consumers (e.g. different locations or different behavior).
-fileConsumption='CONSUMPTION.xlsx'; %give local file name
-sheetnameConsumption='Sheet1'; %probable name
+%fileConsumption='CONSUMPTION.xlsx'; %give local file name
+%sheetnameConsumption='Sheet1'; %probable name
 
 % Meta data input META.xlsx consists of:
 % producers p1, p2, p3 etc. of which the maximum capacity, location and
@@ -24,29 +24,21 @@ sheetnameConsumption='Sheet1'; %probable name
 fileMeta='META.xlsx';
 sheetnameMeta='Sheet1'; %probable name
 
-%% OPTIONAL
-%Optional: write a consumers profile on the basis of Mulder paper.
-writeConsumers
-
 %% LOAD DATA
-%% Load consumer data:
-% Make a file with column 1 time data, column 2, 3, and further consumption data
-% more columns can be used to generate spatial model. Define location in
-% META under c1, c2, etc. for each column supplied.
-[consData,consTxt,]= xlsread([fileLocation fileConsumption],sheetnameConsumption);
-%consData are the numeric values and consTxt are the text cells
-E_c=consData(:,2:end); %second column and further
-t=consData(:,1); %first column and further
-clear consData consTxt
-%Does nothing with ConsTxt
-
-%% Load meta file:
+% Load meta file:
 % The meta file loads producers and consumers information. Producers p have
 % the following format: p1, p2, p3 and are loaded in a structured array
 % like Producers.capacity=[capacity p1; capacity p2 etc];
 [metaNum,metaTxt,]= xlsread([fileLocation fileMeta],sheetnameMeta);
 [Consumers, Producers, Transport, Constant]=loadMeta(metaNum,metaTxt);
 clear metaNum metaTxt
+
+%% Load consumer data:
+% Consumer data will be provided by the Consumerfunction, which will output
+% directly a E_c matrix with the consumption values per timestep.
+E_c=consumerFunction(Consumers);
+t=[0:(1/96):365]';
+%Does nothing with ConsTxt
 
 %% Central function:
 %EPACE gives back the unmatched residual energies as function of time.
@@ -62,7 +54,7 @@ clear metaNum metaTxt
 
 Output=0; %Output variable suppresses making graphs.
 [E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
-for i=1:50 %Break either if mismatch is low or if counter is finished
+for i=1:150 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
     % and production residuals E_pres. 
     [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
@@ -72,13 +64,13 @@ for i=1:50 %Break either if mismatch is low or if counter is finished
     % The producing capacity is increased by a factor (100% + mismatch percentage). 
     Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2)); 
     % *It is dividing the shortage percentage by the number of producers.
-    if abs(Mismatch)<1 % 1 is arbitrary, choose a better value.
+    if abs(Mismatch)<1 && abs(Mismatch)>-1 % 1 is arbitrary
         break
     end
 end
 
 %% print a summary:
-Output=0;
+Output=1;
 [E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
 
 %Extracting Useful information:
