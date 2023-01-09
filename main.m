@@ -24,6 +24,9 @@ fileLocation=''; % in case you save your excel files elsewhere
 fileMeta='META.xlsx';
 sheetnameMeta='Sheet1'; %probable name
 
+fileWind='Wind_distribution.xlsx';
+sheetnameWind='Sheet1';
+
 %% LOAD DATA
 % Load meta file:
 % The meta file loads producers and consumers information. Producers p have
@@ -31,6 +34,8 @@ sheetnameMeta='Sheet1'; %probable name
 % like Producers.capacity=[capacity p1; capacity p2 etc];
 [metaNum,metaTxt,]= xlsread([fileLocation fileMeta],sheetnameMeta);
 [Consumers, Producers, Transport, Constant]=loadMeta(metaNum,metaTxt);
+[metaNum_example] =[metaNum];
+[metaTxt_example] = [metaTxt];
 clear metaNum metaTxt
 
 %% Load consumer data:
@@ -38,7 +43,12 @@ clear metaNum metaTxt
 % directly a E_c matrix with the consumption values per timestep.
 E_c=consumerFunction(Consumers);
 t=[0:(1/96):365]';
-%Does nothing with ConsTxt
+
+%% Load Wind Data:
+%Load the Wind Distribution information obtained for each wind farm
+%location. It is a matrix of as many rows as timesteps and with columns =
+%nº of locations.
+Wind_distribution = xlsread([fileLocation fileWind],sheetnameWind);
 
 %% Central function:
 %EPACE gives back the unmatched residual energies as function of time.
@@ -54,7 +64,7 @@ t=[0:(1/96):365]';
 
 Output=0; %Output variable suppresses making graphs.
 [E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
-for i=1:150 %Break either if mismatch is low or if counter is finished
+for i=1:50 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
     % and production residuals E_pres. 
     [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
@@ -78,8 +88,15 @@ E_imbalance = EnergyImbalance (E_p_final,E_c);
 
 for i=1:size(Producers.type,1)
     string=Producers.type{i,1};
-    coordinates=Producers.coordinates(i,:);
+    coordinates_solar_1=Producers.coordinates(i,:);
 end
-E_p_frac_solar=solarFunction(t,coordinates,Constant);
+E_p_frac_solar=solarFunction(t,coordinates_solar_1,Constant);
 [E_c_consumerfunction] = consumerFunction(Consumers);
 plot([0:(1/96):365], E_c_consumerfunction(:,1))
+
+for i=1:size(Producers.type,1)
+    string=Producers.type{i,1};
+    coordinates=Producers.coordinates(i,:);
+end
+
+E_p_frac_wind=windFunction(t,Producers.coordinates(2,:));

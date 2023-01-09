@@ -16,7 +16,7 @@ function [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transp
 solar=@solarFunction;
 wind=@windFunction;
 biomass=@biomassFunction;
-E_p=producerFunction(t,Producers,Constant,solar,wind,biomass);
+E_p=producerFunction(t,Producers,Constant,solar,wind,biomass,Wind_distribution);
 
 %% Calculate transport efficiencies between users and producers:
 %Output matrix gives energy efficiency from producers (rows) to consumers
