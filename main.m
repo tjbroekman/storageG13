@@ -12,8 +12,8 @@ fileLocation=''; % in case you save your excel files elsewhere
 % A time vector t of n x 1,
 % An energy consumption matrix E_c matrix of n x m with m types of
 % consumers (e.g. different locations or different behavior).
-fileConsumption='CONSUMPTION.xlsx'; %give local file name
-sheetnameConsumption='Sheet1'; %probable name
+%fileConsumption='CONSUMPTION.xlsx'; %give local file name
+%sheetnameConsumption='Sheet1'; %probable name
 
 % Meta data input META.xlsx consists of:
 % producers p1, p2, p3 etc. of which the maximum capacity, location and
@@ -24,29 +24,31 @@ sheetnameConsumption='Sheet1'; %probable name
 fileMeta='META.xlsx';
 sheetnameMeta='Sheet1'; %probable name
 
-%% OPTIONAL
-%Optional: write a consumers profile on the basis of Mulder paper.
-writeConsumers
+fileWind='Wind_distribution.xlsx';
+sheetnameWind='Sheet1';
 
 %% LOAD DATA
-%% Load consumer data:
-% Make a file with column 1 time data, column 2, 3, and further consumption data
-% more columns can be used to generate spatial model. Define location in
-% META under c1, c2, etc. for each column supplied.
-[consData,consTxt,]= xlsread([fileLocation fileConsumption],sheetnameConsumption);
-%consData are the numeric values and consTxt are the text cells
-E_c=consData(:,2:end); %second column and further
-t=consData(:,1); %first column and further
-clear consData consTxt
-%Does nothing with ConsTxt
-
-%% Load meta file:
+% Load meta file:
 % The meta file loads producers and consumers information. Producers p have
 % the following format: p1, p2, p3 and are loaded in a structured array
 % like Producers.capacity=[capacity p1; capacity p2 etc];
 [metaNum,metaTxt,]= xlsread([fileLocation fileMeta],sheetnameMeta);
 [Consumers, Producers, Transport, Constant]=loadMeta(metaNum,metaTxt);
+[metaNum_example] =[metaNum];
+[metaTxt_example] = [metaTxt];
 clear metaNum metaTxt
+
+%% Load consumer data:
+% Consumer data will be provided by the Consumerfunction, which will output
+% directly a E_c matrix with the consumption values per timestep.
+E_c=consumerFunction(Consumers);
+t=[0:(1/96):365]';
+
+%% Load Wind Data:
+%Load the Wind Distribution information obtained for each wind farm
+%location. It is a matrix of as many rows as timesteps and with columns =
+%nº of locations.
+Wind_distribution = xlsread([fileLocation fileWind],sheetnameWind);
 
 %% Central function:
 %EPACE gives back the unmatched residual energies as function of time.
@@ -72,7 +74,7 @@ for i=1:50 %Break either if mismatch is low or if counter is finished
     % The producing capacity is increased by a factor (100% + mismatch percentage). 
     Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2)); 
     % *It is dividing the shortage percentage by the number of producers.
-    if abs(Mismatch)<1 % 1 is arbitrary, choose a better value.
+    if abs(Mismatch)<1 && abs(Mismatch)>-1 % 1 is arbitrary
         break
     end
 end
@@ -86,6 +88,15 @@ E_imbalance = EnergyImbalance (E_p_final,E_c);
 
 for i=1:size(Producers.type,1)
     string=Producers.type{i,1};
+    coordinates_solar_1=Producers.coordinates(i,:);
+end
+E_p_frac_solar=solarFunction(t,coordinates_solar_1,Constant);
+[E_c_consumerfunction] = consumerFunction(Consumers);
+plot([0:(1/96):365], E_c_consumerfunction(:,1))
+
+for i=1:size(Producers.type,1)
+    string=Producers.type{i,1};
     coordinates=Producers.coordinates(i,:);
 end
-E_p_frac_solar=solarFunction(t,coordinates,Constant);
+
+E_p_frac_wind=windFunction(t,Producers.coordinates(2,:));
