@@ -63,11 +63,11 @@ Wind_distribution = xlsread([fileLocation fileWind],sheetnameWind);
 % during storage.
 
 Output=0; %Output variable suppresses making graphs.
-[E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
+[E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution);
 for i=1:50 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
     % and production residuals E_pres. 
-    [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
+    [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution);
     %Evaluation of mismatch:
     Mismatch=sum(sum(E_cres))-sum(sum(E_pres)) % Net shortage of energy per year
     MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
@@ -81,7 +81,7 @@ end
 
 %% print a summary:
 Output=1;
-[E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
+[E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution);
 
 %Extracting Useful information:
 E_imbalance = EnergyImbalance (E_p_final,E_c);

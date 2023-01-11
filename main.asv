@@ -24,7 +24,7 @@ fileLocation=''; % in case you save your excel files elsewhere
 fileMeta='META.xlsx';
 sheetnameMeta='Sheet1'; %probable name
 
-fileWind='Wind_Distribution.xlsx';
+fileWind='Wind_distribution.xlsx';
 sheetnameWind='Sheet1';
 
 %% LOAD DATA
@@ -48,7 +48,7 @@ t=[0:(1/96):365]';
 %Load the Wind Distribution information obtained for each wind farm
 %location. It is a matrix of as many rows as timesteps and with columns =
 %nº of locations.
-W
+Wind_distribution = xlsread([fileLocation fileWind],sheetnameWind);
 
 %% Central function:
 %EPACE gives back the unmatched residual energies as function of time.
@@ -63,11 +63,11 @@ W
 % during storage.
 
 Output=0; %Output variable suppresses making graphs.
-[E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
+[E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution);
 for i=1:50 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
     % and production residuals E_pres. 
-    [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output);
+    [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,WInd);
     %Evaluation of mismatch:
     Mismatch=sum(sum(E_cres))-sum(sum(E_pres)) % Net shortage of energy per year
     MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
