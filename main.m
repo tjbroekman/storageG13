@@ -33,9 +33,10 @@ sheetnameWind='Sheet1';
 % the following format: p1, p2, p3 and are loaded in a structured array
 % like Producers.capacity=[capacity p1; capacity p2 etc];
 [metaNum,metaTxt,]= xlsread([fileLocation fileMeta],sheetnameMeta);
-[Consumers, Producers, Transport, Constant]=loadMeta(metaNum,metaTxt);
 [metaNum_example] =[metaNum];
 [metaTxt_example] = [metaTxt];
+[Consumers, Producers, Transport, Constant]=loadMeta(metaNum,metaTxt);
+
 clear metaNum metaTxt
 
 %% Load consumer data:

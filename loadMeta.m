@@ -34,7 +34,7 @@ for i=1:size(metaTxt2,1)
     end
     end
     % Check if identification is done properly:
-    if id>0
+    if id>0 %To avoid blank spaces
         %identify which property is assigned:
         switch string((metaTxt2(i,2)))
             case{'coordinates'}

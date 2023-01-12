@@ -28,55 +28,55 @@ for i=1:size(Producers.type,1)
             %wind function gives variation as fraction of annual generation
             %(integral wind from 0 to 365 equals 1)
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,1); 
+                .*Wind_distribution(:,1); 
 
         case{'wind_2'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,2);  
+                .*Wind_distribution(:,2);  
 
         case{'wind_3'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,3);  
+                .*Wind_distribution(:,3);  
         
          case{'wind_4'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,4);  
+                .*Wind_distribution(:,4);  
 
         case{'wind_5'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,5); 
+                .*Wind_distribution(:,5); 
         
         case{'wind_6'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,6);  
+                .*Wind_distribution(:,6);  
 
         case{'wind_7'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,7);  
+                .*Wind_distribution(:,7);  
         
          case{'wind_8'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,8);  
+                .*Wind_distribution(:,8);  
 
         case{'wind_9'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,9);
+                .*Wind_distribution(:,9);
 
         case{'wind_10'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,10);  
+                .*Wind_distribution(:,10);  
 
         case{'wind_11'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,11);  
+                .*Wind_distribution(:,11);  
         
          case{'wind_12'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,12);  
+                .*Wind_distribution(:,12);  
 
         case{'wind_13'}
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
-                *Wind_distribution(:,13);
+                .*Wind_distribution(:,13);
             
         case{'biomass'}
             E_p(:,i)=biomass(t,coordinates)*Producers.capacity(i)/(1/(dt)/24);
