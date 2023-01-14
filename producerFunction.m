@@ -1,4 +1,4 @@
-function E_p=producerFunction(t,Producers,Constant,solar,wind,biomass,Wind_distribution)
+function E_p=producerFunction(t,Producers,Constant,solar,wind,biomass,Wind_distribution,limit_solar)
 % Code by Mark Weijers 
 % m.j.weijers@tudelft.nl
 % for use in Necessity of Storage course of FM Mulder 2022
