@@ -54,38 +54,62 @@ for i=1:size(Consumers.type,1)
           P_winter(t).*(0.5-0.5*cos(2*pi*(t-172)/365)))).*A(t);
             FIT=integral(@(t) demand_profile(t),0,365);
             E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;
-            %After obtaining the demand in UTC_0, the function circshift
-            %will displace all the values in the chosen dimension. In this
-            %case, it must go backwards 5 hours, so 20 timesteps. 
+%After obtaining the demand in UTC_0, the function circshift
+%will displace all the values in the chosen dimension. In this
+%case, it must go backwards 5 hours, so 20 timesteps. 
             E_c(:,i) = circshift(E_c(:,i), (4*(-5)), 1);
 
         case{'residential_-6'}
             demand_profile=@(t) Consumers.capacity(i)*24*((P_summer(t).*(0.5+0.5*cos(2*pi*(t-172)/365)) + ...
           P_winter(t).*(0.5-0.5*cos(2*pi*(t-172)/365)))).*A(t);
             FIT=integral(@(t) demand_profile(t),0,365);
-            E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;    
+            E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;   
+            E_c(:,i) = circshift(E_c(:,i), (4*(-6)), 1);
 
         case{'residential_-7'}
             demand_profile=@(t) Consumers.capacity(i)*24*((P_summer(t).*(0.5+0.5*cos(2*pi*(t-172)/365)) + ...
           P_winter(t).*(0.5-0.5*cos(2*pi*(t-172)/365)))).*A(t);
             FIT=integral(@(t) demand_profile(t),0,365);
             E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;
+            E_c(:,i) = circshift(E_c(:,i), (4*(-7)), 1);
 
         case{'residential_-8'}
             demand_profile=@(t) Consumers.capacity(i)*24*((P_summer(t).*(0.5+0.5*cos(2*pi*(t-172)/365)) + ...
           P_winter(t).*(0.5-0.5*cos(2*pi*(t-172)/365)))).*A(t);
             FIT=integral(@(t) demand_profile(t),0,365);
-            E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;    
+            E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;   
+            E_c(:,i) = circshift(E_c(:,i), (4*(-8)), 1);
 
-        case{'commercial'}
-            
-           demand_profile=@(t) Consumers.capacity(i)*24*((P_summer(t).*(0.5+0.5*cos(2*pi*(t-172)/365)) + ...
+        case{'commercial_-5'}
+            demand_profile=@(t) Consumers.capacity(i)*24*((P_summer(t).*(0.5+0.5*cos(2*pi*(t-172)/365)) + ...
+          P_winter(t).*(0.5-0.5*cos(2*pi*(t-172)/365)))).*A(t);
+            FIT=integral(@(t) demand_profile(t),0,365);
+            E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;   
+            E_c(:,i) = circshift(E_c(:,i), (4*(-5)), 1);
+        
+        case{'commercial_-6'}
+            demand_profile=@(t) Consumers.capacity(i)*24*((P_summer(t).*(0.5+0.5*cos(2*pi*(t-172)/365)) + ...
+          P_winter(t).*(0.5-0.5*cos(2*pi*(t-172)/365)))).*A(t);
+            FIT=integral(@(t) demand_profile(t),0,365);
+            E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;   
+            E_c(:,i) = circshift(E_c(:,i), (4*(-6)), 1);
+
+        case{'commercial_-7'}
+            demand_profile=@(t) Consumers.capacity(i)*24*((P_summer(t).*(0.5+0.5*cos(2*pi*(t-172)/365)) + ...
           P_winter(t).*(0.5-0.5*cos(2*pi*(t-172)/365)))).*A(t);
             FIT=integral(@(t) demand_profile(t),0,365);
             E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;
+            E_c(:,i) = circshift(E_c(:,i), (4*(-7)), 1);
+
+        case{'commercial_-8'}
+            demand_profile=@(t) Consumers.capacity(i)*24*((P_summer(t).*(0.5+0.5*cos(2*pi*(t-172)/365)) + ...
+          P_winter(t).*(0.5-0.5*cos(2*pi*(t-172)/365)))).*A(t);
+            FIT=integral(@(t) demand_profile(t),0,365);
+            E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;   
+            E_c(:,i) = circshift(E_c(:,i), (4*(-8)), 1);
 
         otherwise
-            E_c(:,i)=ones(size(t,1),1);
+            E_c(:,i)=ones(size(t,1),1)*Consumers.capacity(i)/4;
     end
 end
 end

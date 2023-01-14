@@ -27,6 +27,9 @@ sheetnameMeta='Sheet1'; %probable name
 fileWind='Wind_distribution.xlsx';
 sheetnameWind='Sheet1';
 
+%Variable to determine if 70% limit in solar production is activated:
+limit_solar = 0;
+
 %% LOAD DATA
 % Load meta file:
 % The meta file loads producers and consumers information. Producers p have
@@ -65,7 +68,7 @@ Wind_distribution = xlsread([fileLocation fileWind],sheetnameWind);
 
 Output=0; %Output variable suppresses making graphs.
 [E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution);
-for i=1:50 %Break either if mismatch is low or if counter is finished
+for i=1:25 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
     % and production residuals E_pres. 
     [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution);
@@ -73,7 +76,8 @@ for i=1:50 %Break either if mismatch is low or if counter is finished
     Mismatch=sum(sum(E_cres))-sum(sum(E_pres)) % Net shortage of energy per year
     MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
     % The producing capacity is increased by a factor (100% + mismatch percentage). 
-    Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2)); 
+    % Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2)); 
+     Producers.capacity=Producers.capacity*(1+MisPerc/3); 
     % *It is dividing the shortage percentage by the number of producers.
     if abs(Mismatch)<1 && abs(Mismatch)>-1 % 1 is arbitrary
         break
@@ -92,6 +96,7 @@ for i=1:size(Producers.type,1)
     coordinates_solar_1=Producers.coordinates(i,:);
 end
 E_p_frac_solar=solarFunction(t,coordinates_solar_1,Constant);
+%xlswrite('E_p_frac_solar_1.xlsx',E_p_frac_solar);
 [E_c_consumerfunction] = consumerFunction(Consumers);
 plot([0:(1/96):365], E_c_consumerfunction(:,1))
 

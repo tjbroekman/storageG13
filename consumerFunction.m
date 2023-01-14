@@ -108,10 +108,8 @@ for i=1:size(Consumers.type,1)
             E_c(:,i) = demand_profile(t)*Consumers.capacity(i)*365/4/FIT;   
             E_c(:,i) = circshift(E_c(:,i), (4*(-8)), 1);
 
-        
-
         otherwise
-            E_c(:,i)=ones(size(t,1),1);
+            E_c(:,i)=ones(size(t,1),1)*Consumers.capacity(i)/4;
     end
 end
 end
