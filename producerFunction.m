@@ -1,4 +1,4 @@
-function E_p=producerFunction(t,Producers,Constant,solar,wind,biomass,Wind_distribution,limit_solar)
+function E_p=producerFunction(t,Producers,Constant,solar,wind,biomass,Wind_distribution,limit_solar,Solar_distribution)
 % Code by Mark Weijers 
 % m.j.weijers@tudelft.nl
 % for use in Necessity of Storage course of FM Mulder 2022
@@ -29,6 +29,142 @@ for i=1:size(Producers.type,1)
                     end
                 end                  
             end
+
+        case{'solar_1'}
+            E_p(:,i)=solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24)).*Solar_distribution(:,1);
+            %The Solar distribution matrix contains weather information
+            %that provides variations for each timestep, to produce some
+            %noise in the data. It is different for each location. 
+            if limit_solar == 1
+                 %Capacity is in GWh per h, so it must be divided by 4 for the maximum in a timestep
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+
+                    end
+                end                  
+            end
+
+        case{'solar_2'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,2); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end 
+
+        case{'solar_3'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,3); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end 
+
+        case{'solar_4'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,4); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end 
+
+        case{'solar_5'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,5); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end 
+
+        case{'solar_6'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,6); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end 
+
+        case{'solar_7'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,7); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end
+
+
+        case{'solar_8'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,8); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end 
+
+        case{'solar_9'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,9); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end 
+
+        case{'solar_10'}
+            E_p(:,i)=(solar(t,coordinates,Constant)...
+                *(Producers.capacity(i)*365/(1/(dt)/24))).*Solar_distribution(:,10); 
+            if limit_solar == 1
+                max_production = Producers.capacity(i)/4;
+                for j = 1:size(E_p,1)
+                    if E_p(j,i) >= max_production
+                        % Here the maximum is limited to 70%
+                        E_p(j,i) = E_p(j,i)*0.7;
+                    end
+                end                  
+            end    
 
         case{'wind'}
             %wind function gives variation as fraction of annual generation

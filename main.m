@@ -27,6 +27,9 @@ sheetnameMeta='Sheet1'; %probable name
 fileWind='Wind_distribution.xlsx';
 sheetnameWind='Sheet1';
 
+fileSolar='Solar_distribution.xlsx';
+sheetnameSolar='Sheet1';
+
 %Variable to determine if 70% limit in solar production is activated:
 limit_solar = 0;
 
@@ -52,7 +55,14 @@ t=[0:(1/96):365]';
 %Load the Wind Distribution information obtained for each wind farm
 %location. It is a matrix of as many rows as timesteps and with columns =
 %nº of locations.
-Wind_distribution = xlsread([fileLocation fileWind],sheetnameWind);
+Wind_distribution_ = xlsread([fileLocation fileWind],sheetnameWind);
+Wind_distribution = Wind_distribution_ .^3;
+
+%% Load Solar Weather Data:
+%Load the Solar Distribution information obtained for each solar farm
+%location. It is a matrix of as many rows as timesteps and with columns =
+%nº of locations.
+Solar_distribution = xlsread([fileLocation fileSolar],sheetnameSolar);
 
 %% Central function:
 %EPACE gives back the unmatched residual energies as function of time.
@@ -67,11 +77,11 @@ Wind_distribution = xlsread([fileLocation fileWind],sheetnameWind);
 % during storage.
 
 Output=0; %Output variable suppresses making graphs.
-[E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar);
-for i=1:25 %Break either if mismatch is low or if counter is finished
+[E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
+for i=1:75 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
     % and production residuals E_pres. 
-    [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar);
+    [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
     %Evaluation of mismatch:
     Mismatch=sum(sum(E_cres))-sum(sum(E_pres)) % Net shortage of energy per year
     MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
@@ -79,14 +89,14 @@ for i=1:25 %Break either if mismatch is low or if counter is finished
     % Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2)); 
      Producers.capacity=Producers.capacity*(1+MisPerc/3); 
     % *It is dividing the shortage percentage by the number of producers.
-    if abs(Mismatch)<1 && abs(Mismatch)>-1 % 1 is arbitrary
+    if abs(Mismatch)<0.5 && abs(Mismatch)>-0.5 % this value is arbitrary, just needs to be small.
         break
     end
 end
 
 %% print a summary:
 Output=1;
-[E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar);
+[E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
 
 %Extracting Useful information:
 E_imbalance = EnergyImbalance (E_p_final,E_c);
@@ -99,6 +109,7 @@ E_p_frac_solar=solarFunction(t,coordinates_solar_1,Constant);
 %xlswrite('E_p_frac_solar_1.xlsx',E_p_frac_solar);
 [E_c_consumerfunction] = consumerFunction(Consumers);
 plot([0:(1/96):365], E_c_consumerfunction(:,1))
+%xlswrite('Producers.xlsx',Producers.capacity)
 
 for i=1:size(Producers.type,1)
     string=Producers.type{i,1};
