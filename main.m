@@ -21,8 +21,8 @@ fileLocation=''; % in case you save your excel files elsewhere
 % consumers c1, c2, etc. of which the location is defined.
 % transport efficiency t1, by which the loss of electricity transport is
 % calculated.
-fileMeta='META.xlsx';
-sheetnameMeta='Sheet1'; %probable name
+fileMeta='META_test.xlsx';
+sheetnameMeta='Sheet1';
 
 fileWind='Wind_distribution.xlsx';
 sheetnameWind='Sheet1';
@@ -87,7 +87,9 @@ for i=1:75 %Break either if mismatch is low or if counter is finished
     MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
     % The producing capacity is increased by a factor (100% + mismatch percentage). 
     % Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2)); 
-     Producers.capacity=Producers.capacity*(1+MisPerc/3); 
+     Producers.capacity(1,1:23)= Producers.capacity(1,1:23)*(1+MisPerc/3); 
+     %Only the first 23 producers are modified because the rest are hydro
+     %plants with unchanging capacity. 
     % *It is dividing the shortage percentage by the number of producers.
     if abs(Mismatch)<0.5 && abs(Mismatch)>-0.5 % this value is arbitrary, just needs to be small.
         break
@@ -95,7 +97,7 @@ for i=1:75 %Break either if mismatch is low or if counter is finished
 end
 
 %% print a summary:
-Output=1;
+Output=0;
 [E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
 
 %Extracting Useful information:
