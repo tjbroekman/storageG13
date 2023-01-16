@@ -8,6 +8,10 @@ function E_p=producerFunction(t,Producers,Constant,solar,wind,biomass,Wind_distr
 % to time and location dependant energy profile.
 dt=t(2)-t(1);
 E_p=[];
+
+%To determine the limit on solar production if curtailment is needed. 
+production_limit = 0.7;
+
 for i=1:size(Producers.type,1)
     string=Producers.type{i,1};
     coordinates=Producers.coordinates(i,:);
@@ -22,10 +26,10 @@ for i=1:size(Producers.type,1)
                  %Capacity is in GWh per h, so it must be divided by 4 for the maximum in a timestep
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
-
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
+                    %The limit is imposed by the "production_limit"
+                    %variable found outside the for loop. 
                     end
                 end                  
             end
@@ -40,9 +44,8 @@ for i=1:size(Producers.type,1)
                  %Capacity is in GWh per h, so it must be divided by 4 for the maximum in a timestep
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
 
                     end
                 end                  
@@ -54,9 +57,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end 
@@ -67,9 +69,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end 
@@ -80,9 +81,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end 
@@ -93,9 +93,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                   if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end 
@@ -106,9 +105,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end 
@@ -119,9 +117,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end
@@ -133,9 +130,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end 
@@ -146,9 +142,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end 
@@ -159,9 +154,8 @@ for i=1:size(Producers.type,1)
             if limit_solar == 1
                 max_production = Producers.capacity(i)/4;
                 for j = 1:size(E_p,1)
-                    if E_p(j,i) >= max_production
-                        % Here the maximum is limited to 70%
-                        E_p(j,i) = E_p(j,i)*0.7;
+                    if E_p(j,i) >= max_production*production_limit
+                        E_p(j,i) = max_production*production_limit;
                     end
                 end                  
             end    
