@@ -1,4 +1,4 @@
-function shortageSum = shortageCalculation(E_imbalance)
+function [shortageSum,ST_storage,LT_storage] = shortageCalculation(E_imbalance)
 
 % Storage per month
 ST_storage = zeros(1,length(E_imbalance));
@@ -6,7 +6,7 @@ ST_input = zeros(1,length(E_imbalance));
 
 % Storage for over a month
 LT_storage = zeros(1,length(E_imbalance));
-LT_storage(1) = 0;
+LT_storage(1) = 575000;
 LT_input = zeros(1,length(E_imbalance));
 
 shortages = zeros(1,length(E_imbalance));
@@ -35,7 +35,7 @@ for i=1:length(E_imbalance)
         end
 
     elseif(E_imbalance(i)>0)    %EXCESS
-        if(ST_storage(i)>=25000)
+        if(ST_storage(i)>=5000)
             LT_storage(i+1) = LT_storage(i)+E_imbalance(i)*eff_l;
             ST_storage(i+1) = ST_storage(i);
             LT_input(i) = E_imbalance(i);

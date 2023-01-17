@@ -21,7 +21,7 @@ fileLocation=''; % in case you save your excel files elsewhere
 % consumers c1, c2, etc. of which the location is defined.
 % transport efficiency t1, by which the loss of electricity transport is
 % calculated.
-fileMeta='META_test.xlsx';
+fileMeta='META_final_NO_storage.xlsx';
 sheetnameMeta='Sheet1';
 
 fileWind='Wind_distribution.xlsx';
@@ -87,9 +87,9 @@ for i=1:75 %Break either if mismatch is low or if counter is finished
     Mismatch=sum(sum(E_cres))-sum(sum(E_pres)) % Net shortage of energy per year
     Shortage_Total=shortageCalculation(E_imbalance)
         % MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
-          MisPerc=Shortage_Total/(150*(sum(Producers.capacity)))
+          MisPerc=Shortage_Total/(365*24*(sum(Producers.capacity)))
     % The producing capacity is increased by a factor (100% + mismatch percentage). 
-     Producers.capacity(1,1:23)= Producers.capacity(1,1:23)*(1.01+MisPerc/3); 
+     Producers.capacity(1,1:23)= Producers.capacity(1,1:23)*(1.01+MisPerc/2); 
      %Only the first 23 producers are modified because the rest are hydro
      %and biomass plants with unchanging capacity. 
     % *It is dividing the shortage percentage by the number of producers.
@@ -98,8 +98,21 @@ for i=1:75 %Break either if mismatch is low or if counter is finished
     end
 end
 
+[shortageSum,ST_storage,LT_storage] = shortageCalculation(E_imbalance);
+LT_storage_max = max(LT_storage);
+
+Storage_Output = 1;
+    if Storage_Output == 1
+        figure();
+        plot(LT_storage);
+        title("Longterm")
+        figure();
+        plot(ST_storage);
+        title("Shortterm")
+    end
+
 %% print a summary:
-Output=1;
+Output=0;
 [E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
 
 %Extracting Useful information:
