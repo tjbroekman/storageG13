@@ -1,4 +1,4 @@
-close all;
+function shortageSum = shortageCalculation(E_imbalance)
 
 % Storage per month
 ST_storage = zeros(1,length(E_imbalance));
@@ -12,10 +12,7 @@ LT_input = zeros(1,length(E_imbalance));
 shortages = zeros(1,length(E_imbalance));
 
 %short & long term storage efficiency
-eff_phs = 0.8;
-eff_bat = 0.8;
-eff_amm = 0.7;
-eff_hyd = 0.7;
+
 
 eff_s = 0.9;
 eff_l = 0.53;
@@ -55,12 +52,5 @@ end
 
 shortageSum = sum(shortages);
 
-figure();
-plot(LT_storage);
-title("Longterm")
-figure();
-plot(ST_storage);
-title("Shortterm")
-figure();
-plot(shortages);
-title("Shortages");
+
+end
