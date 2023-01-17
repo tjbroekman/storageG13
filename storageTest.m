@@ -53,7 +53,8 @@ for i=1:length(E_imbalance)
 
 end
 
-shortageSum = sum(shortages);
+shortageSum_notfunction = sum(shortages);
+LT_storage_max = max(LT_storage);
 
 figure();
 plot(LT_storage);

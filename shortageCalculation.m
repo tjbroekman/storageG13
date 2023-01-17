@@ -12,8 +12,6 @@ LT_input = zeros(1,length(E_imbalance));
 shortages = zeros(1,length(E_imbalance));
 
 %short & long term storage efficiency
-
-
 eff_s = 0.9;
 eff_l = 0.53;
 

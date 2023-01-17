@@ -219,15 +219,17 @@ for i=1:size(Producers.type,1)
             E_p(:,i)=wind(t,coordinates)*(Producers.capacity(i)*365/(1/(dt)/24))...
                 .*Wind_distribution(:,13);
             
-        case{'biomass'}
-            E_p(:,i)=biomass(t,coordinates)*Producers.capacity(i)/(1/(dt)/24);
 
         case{'hydro'}
             %Hydro production is assumed constant throughout the year. 
             E_p(:,i)=ones(size(t,1),1)*Producers.capacity(i)/4;
+
+        case{'biomass'}
+            %Biomass production is assumed constant throughout the year. 
+            E_p(:,i)=ones(size(t,1),1)*Producers.capacity(i)/4;    
         
         otherwise
-            E_p(:,i)=ones(size(t,1),1);
+            E_p(:,i)=ones(size(t,1),1)*Producers.capacity(i)/4;
     end
 end
 end

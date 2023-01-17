@@ -78,21 +78,20 @@ Solar_distribution = xlsread([fileLocation fileSolar],sheetnameSolar);
 
 Output=0; %Output variable suppresses making graphs.
 [E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
-for i=1:25 %Break either if mismatch is low or if counter is finished
+for i=1:75 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
     % and production residuals E_pres. 
     [E_cres, E_pres, Transport, E_p]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
     %Evaluation of mismatch:
     E_imbalance = EnergyImbalance (E_p,E_c);
-
     Mismatch=sum(sum(E_cres))-sum(sum(E_pres)) % Net shortage of energy per year
-    shortageCalculation(E_imbalance)
-    MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
+    Shortage_Total=shortageCalculation(E_imbalance)
+        % MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
+          MisPerc=Shortage_Total/(150*(sum(Producers.capacity)))
     % The producing capacity is increased by a factor (100% + mismatch percentage). 
-    % Producers.capacity=Producers.capacity*(1+MisPerc/size(Producers.capacity,2)); 
-     Producers.capacity(1,1:23)= Producers.capacity(1,1:23)*(1+MisPerc/3); 
+     Producers.capacity(1,1:23)= Producers.capacity(1,1:23)*(1.01+MisPerc/3); 
      %Only the first 23 producers are modified because the rest are hydro
-     %plants with unchanging capacity. 
+     %and biomass plants with unchanging capacity. 
     % *It is dividing the shortage percentage by the number of producers.
     if shortageCalculation(E_imbalance)<1 % this value is arbitrary, just needs to be small.
         break
@@ -100,11 +99,12 @@ for i=1:25 %Break either if mismatch is low or if counter is finished
 end
 
 %% print a summary:
-Output=0;
+Output=1;
 [E_cres, E_pres, Transport, E_p_final] = EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
 
 %Extracting Useful information:
 E_imbalance = EnergyImbalance (E_p_final,E_c);
+E_imbalance_res = EnergyImbalance (E_pres,E_cres);
 
 for i=1:size(Producers.type,1)
     string=Producers.type{i,1};
@@ -122,3 +122,4 @@ for i=1:size(Producers.type,1)
 end
 
 E_p_frac_wind=windFunction(t,Producers.coordinates(2,:));
+
