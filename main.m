@@ -21,7 +21,7 @@ fileLocation=''; % in case you save your excel files elsewhere
 % consumers c1, c2, etc. of which the location is defined.
 % transport efficiency t1, by which the loss of electricity transport is
 % calculated.
-fileMeta='META_final_NO_storage.xlsx';
+fileMeta='META_final_WITH_storage.xlsx';
 sheetnameMeta='Sheet1';
 
 fileWind='Wind_distribution.xlsx';
@@ -76,7 +76,7 @@ Solar_distribution = xlsread([fileLocation fileSolar],sheetnameSolar);
 % storage from these mismatch patterns, and correct for losses
 % during storage.
 
-Output=0; %Output variable suppresses making graphs.
+Output=1; %Output variable suppresses making graphs.
 [E_cres, E_pres, Transport, E_p_original]=EPACE(E_c,t,Consumers,Producers,Transport,Constant,Output,Wind_distribution,limit_solar,Solar_distribution);
 for i=1:75 %Break either if mismatch is low or if counter is finished
     % Variables of the residuals are given. Consumption residuals E_cres
@@ -89,7 +89,7 @@ for i=1:75 %Break either if mismatch is low or if counter is finished
         % MisPerc=Mismatch./((365*24)*(sum(Producers.capacity))); % Net shortage percentage of energy
           MisPerc=Shortage_Total/(365*24*(sum(Producers.capacity)))
     % The producing capacity is increased by a factor (100% + mismatch percentage). 
-     Producers.capacity(1,1:23)= Producers.capacity(1,1:23)*(1.01+MisPerc/2); 
+     Producers.capacity(1,1:23)= Producers.capacity(1,1:23)*(1.01+MisPerc/3); 
      %Only the first 23 producers are modified because the rest are hydro
      %and biomass plants with unchanging capacity. 
     % *It is dividing the shortage percentage by the number of producers.
@@ -117,17 +117,19 @@ Output=0;
 
 %Extracting Useful information:
 E_imbalance = EnergyImbalance (E_p_final,E_c);
-E_imbalance_res = EnergyImbalance (E_pres,E_cres);
+
+%Total Energy Produced:
+E_total=sum(E_p_final(:));
+
+%Total Production Capacity:
+Capacity_total = sum(Producers.capacity);
 
 for i=1:size(Producers.type,1)
     string=Producers.type{i,1};
     coordinates_solar_1=Producers.coordinates(i,:);
 end
 E_p_frac_solar=solarFunction(t,coordinates_solar_1,Constant);
-%xlswrite('E_p_frac_solar_1.xlsx',E_p_frac_solar);
-[E_c_consumerfunction] = consumerFunction(Consumers);
-plot([0:(1/96):365], E_c_consumerfunction(:,1))
-%xlswrite('Producers.xlsx',Producers.capacity)
+
 
 for i=1:size(Producers.type,1)
     string=Producers.type{i,1};
